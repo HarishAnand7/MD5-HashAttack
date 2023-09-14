@@ -7,8 +7,7 @@
 #SBATCH --error=FirstSlurm-%j.err
 
 
-##cd $SLURM_SUBMIT_DIR
+
 
 echo "Hostname: "
 hostname
-~
