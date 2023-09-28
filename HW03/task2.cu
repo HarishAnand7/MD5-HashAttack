@@ -32,7 +32,7 @@ int main()
 
   int size=sizeof(int)*len;
 
-  cudaMalloc((void**)&dA,size);
+  cudaMallocManaged((void**)&dA,size);
   cudaMemset(dA, 0, size);
 
   arrmat<<<2 , 8 >>>(dA,a);
