@@ -22,6 +22,11 @@ int main()
     factorial<<<1, 8>>>();
 
     cudaDeviceSynchronize();
-
+    cudaError_t cudaError = cudaGetLastError();
+    if (cudaError != cudaSuccess)
+    {
+      fprintf(stderr, "CUDA error: %s\n", cudaGetErrorString(cudaError));
+      return 1;
+    }
     return 0;
 }
