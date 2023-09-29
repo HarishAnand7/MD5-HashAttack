@@ -1,76 +1,74 @@
-#include "vscale.cu"
 #include <iostream>
+#include <cuda.h>
 #include <random>
+#include "vscale.cuh"
+#include <cstdlib>
+#include <ctime>
 #include <chrono>
-#include <cmath>
-#include <cuda_runtime.h>
+#include <bits/stdc++.h>
 
-int main(int argc, char *argv[])
+using std::cout;
+using std::chrono::high_resolution_clock;
+using std::chrono::duration;
+using namespace std;
+
+int main(int argc, char** argv)
 {
+    high_resolution_clock::time_point start;
+    high_resolution_clock::time_point end;
+    duration<double, std::milli> duration_sec;
+    
+    unsigned int n = atoi(argv[1]);
 
-   int N = std::atoi(argv[1]);
+    
+    float* a = new float[n];
+    float* b = new float[n];
 
-   float *hA=new float[N];
-   float *hB=new float[N];
+    
+    default_random_engine gen;
+    uniform_real_distribution<float> distribution1(-10.0, 10.0);
+    uniform_real_distribution<float> distribution2(0.0, 1.0);
 
-   std::random_device rd;
-   std::mt19937 gen(rd());
-   std::uniform_real_distribution<float> dist_a(-10.0, 10.0);
-   std::uniform_real_distribution<float> dist_b(0.0, 1.0);
-
-    float *a, *b;
-
-    int size= N*sizeof(float);
-
-    cudaMalloc((void**)&a, size);
-    cudaMalloc((void**)&b, size);
-
-    for (int i = 0; i < N; i++)
+    for (int i; i<=n; i++)
     {
-        hA[i] = dist_a(gen);
-        hB[i] = dist_b(gen);
+        a[i] = distribution1(gen);
+        b[i] = distribution2(gen);
     }
 
-    cudaMemcpy(a,hA,size,cudaMemcpyHostToDevice);
-    cudaMemcpy(b,hB,size,cudaMemcpyHostToDevice);
+    float* d_a;
+    float* d_b;
 
-    int blockSize = 512;
-    int numBlocks = (N + blockSize - 1) / blockSize;
+    cudaMalloc((void**)&d_a, n*sizeof(float));
+    cudaMalloc((void**)&d_b, n*sizeof(float));
 
-    cudaEvent_t start, stop;
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    cudaEventRecord(start);
+    
+    cudaMemcpy(d_a, a, n * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_b, b, n * sizeof(float), cudaMemcpyHostToDevice);
 
-    vscale<<<numBlocks , blockSize>>>(a,b,N);
-
-    cudaEventRecord(stop);
-    cudaEventSynchronize(stop);
-    float secs = 0.0;
-    cudaEventElapsedTime(&secs, start, stop);
-
-    cudaMemcpy(hB,b,size,cudaMemcpyDeviceToHost);
+    
+    dim3 blockDim(16);  
+    dim3 gridDim((n + blockDim.x - 1) / blockDim.x);  
 
 
-    std::cout << secs << "\n";
-    std::cout << hB[0] << "\n";
-    std::cout << hB[N - 1] << "\n";
+    
+    auto start_time = high_resolution_clock::now();
+    
+    vscale<<<gridDim, blockDim>>>(d_a, d_b, n);
+    auto end_time = high_resolution_clock::now();
+    duration_sec = std::chrono::duration_cast<duration<double, std::milli>>(end_time - start_time);
+    
+    cout << duration_sec.count() << " ";
 
+    
+    cout << b[0] << " ";
+    cout << b[n-1] << endl;
 
-    cudaError_t cudaError = cudaGetLastError();
-      if (cudaError != cudaSuccess)
-      {
-        fprintf(stderr, "CUDA error: %s\n", cudaGetErrorString(cudaError));
-        return 1;
-      }
-
-    cudaDeviceSynchronize();
-
-    cudaFree(a);
-    cudaFree(b);
-
-    delete[] hA;
-    delete[] hB;
+    
+    delete[] a;
+    delete[] b;
+    cudaFree(d_a);
+    cudaFree(d_b);
 
     return 0;
 }
+
