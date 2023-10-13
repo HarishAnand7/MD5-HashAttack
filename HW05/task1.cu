@@ -108,6 +108,7 @@ int main(int argc, char* argv[])
 
     cudaMemcpy(h_C1, d_C1, n * n * sizeof(int), cudaMemcpyDeviceToHost);
     cudaMemcpy(h_C2, d_C2, n * n * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_C3, d_C3, n * n * sizeof(double), cudaMemcpyDeviceToHost);
 
     std::cout << h_C1[0] << std::endl;
     std::cout << h_C1[n * n - 1] << std::endl;
