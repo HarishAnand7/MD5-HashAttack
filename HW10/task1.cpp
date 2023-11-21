@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     T += duration_cast<duration<double, std::milli>>(end - start).count();
     }
     T/=10;
-    cout << store << "\t";
+    cout << store << "\n";
     cout << T << endl;
     T = 0.0;
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
     T += duration_cast<duration<double, std::milli>>(end - start).count();
     }
     T/=10;
-    cout << store << "\t";;
+    cout << store << "\n";;
     cout << T << endl;
 
     T = 0.0;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     }
     T/=10;
 
-    cout << store <<  "\t";;
+    cout << store <<  "\n";;
     cout << T << endl;
 
     T = 0.0;
@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     }
     T/=10;
 
-    cout << store <<  "\t";;
+    cout << store <<  "\n";;
     cout << T << endl;
 
     T = 0.0;
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
     }
     T/=10;
 
-    cout << store <<  "\t";;
+    cout << store <<  "\n";;
     cout << T << endl;
 
     cout<<endl;
