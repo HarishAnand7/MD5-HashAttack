@@ -215,18 +215,21 @@ void md5File(const std::string& filepath, uint8_t* result) {
     std::memcpy(result, ctx.digest, 16);
 }
 
-int main() {
-    // Example usage
+int main() 
+{
+    
     std::string input_str = "Hello, MD5!";
     uint8_t digest[16];
 
     md5String(input_str, digest);
 
-    std::cout << "MD5 Digest: ";
+   std::ostringstream md5_result;
     for (int i = 0; i < 16; ++i) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0')<< static_cast<int>(digest[i]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[i]);
     }
-    std::cout << std::endl;
+     std::string md5_hex_string = md5_result.str();
+     std::cout << "MD5 Digest: " << md5_hex_string<< std::endl;
+   
 
     return 0;
 }
