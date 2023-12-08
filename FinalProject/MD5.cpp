@@ -193,27 +193,6 @@ void md5String(const std::string& input, uint8_t* result)
     std::memcpy(result, ctx.digest, 16);
 }
 
-// Run the MD5 algorithm on the contents of a file and store the digest in result
-void md5File(const std::string& filepath, uint8_t* result) {
-    std::ifstream file(filepath, std::ios::binary);
-    if (!file) {
-        std::cerr << "Error opening file: " << filepath << std::endl;
-        return;
-    }
-
-    MD5Context ctx;
-    md5Init(ctx);
-
-    std::vector<char> input_buffer(1024, 0);
-    size_t input_size;
-
-    while ((input_size = file.readsome(input_buffer.data(), input_buffer.size())) > 0) {
-        md5Update(ctx, reinterpret_cast<const uint8_t*>(input_buffer.data()), input_size);
-    }
-
-    md5Finalize(ctx);
-    std::memcpy(result, ctx.digest, 16);
-}
 
 int main() 
 {
