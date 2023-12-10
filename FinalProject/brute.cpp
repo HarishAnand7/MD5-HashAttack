@@ -1,54 +1,58 @@
-/ Function to perform a brute-force attack
-void bruteForce(const std::string& targetHash)
- {
+void bruteForce(std::string& targetHash, uint8_t* digest)
+{
     const char charset[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    const int passwordLength = 7;
-
+    const int passwordLength = 5;
     char password[8] = {0};  // Null-terminated string to hold the password
 
     int charsetSize = strlen(charset);
+    uint64_t totalCombinations = 1;
 
-    for (int i = 0; i < charsetSize; ++i) 
-	{
-        password[0] = charset[i];
 
-        for (int j = 0; j < charsetSize; ++j) 
-	{
-            password[1] = charset[j];
+    // Calculate the total number of combinations
+   totalCombinations = charsetSize * charsetSize * charsetSize * charsetSize * charsetSize;
 
-            for (int k = 0; k < charsetSize; ++k) 
-	    {
-                password[2] = charset[k];
+   std::cout << "Total Combinations: " << totalCombinations << std::endl;
 
-                for (int l = 0; l < charsetSize; ++l)
-		{
-                    password[3] = charset[l];
+    for (uint64_t iteration = 0; iteration < totalCombinations; ++iteration)
+      {
+        // Generate the password using iteration as an index
+        uint64_t temp = iteration;
+        for (int i = 0; i < passwordLength; ++i)
+        {
+            password[i] = charset[temp % charsetSize];
+            temp /= charsetSize;
+        }
 
-                    for (int m = 0; m < charsetSize; ++m) 
-		    {
-                        password[4] = charset[m];
+        md5String(password, digest);
 
-                        for (int n = 0; n < charsetSize; ++n) 	
-			{
-                            password[5] = charset[n];
+        std::ostringstream md5_result;
 
-                            for (int o = 0; o < charsetSize; ++o)
-			    {
-                                password[6] = charset[o];
-                                std::cout<<password<<"\n";
-                                std::string currentHash = md5String(password);
-                                std::cout<<currentHash<<"\n";
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[0]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[1]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[2]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[3]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[4]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[5]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[6]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[7]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[8]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[9]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[10]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[11]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[12]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[13]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[14]);
+        md5_result << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(digest[15]);
 
-                                if (currentHash == targetHash)
-				{
-                                    std::cout << "Password Cracked: " << password << std::endl;
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+
+        std::string md5_hex_string = md5_result.str();
+
+        //std::cout << "Iteration: " << iteration << ", Password: " << password << ", MD5: " << md5_hex_string << std::endl;
+
+        if (md5_hex_string == targetHash)
+        {
+            std::cout << "Password Cracked: " << password << std::endl << md5_hex_string << ":\t" << iteration << std::endl;
+            return;
         }
     }
 
