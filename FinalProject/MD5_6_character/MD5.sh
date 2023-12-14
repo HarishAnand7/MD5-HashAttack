@@ -1,12 +1,12 @@
 #!/usr/bin/env zsh
-#SBATCH --job-name=task
+#SBATCH --job-name=6character
 #SBATCH --partition=instruction
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --time=0-02:00:00
 #SBATCH --gres=gpu:2
-#SBATCH --error=errorq1-%j.txt
-#SBATCH --output=outputq1-%j.txt
+#SBATCH --error=errorq-%j.txt
+#SBATCH --output=outputq-%j.txt
 
 
 cd $SLURM_SUBMIT_DIR
