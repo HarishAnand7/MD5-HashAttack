@@ -12,6 +12,6 @@
 cd $SLURM_SUBMIT_DIR
 
 
-nvcc  -Xcompiler -O3 -Xcompiler -Wall -Xptxas -O3 -std c++17 -o 
-./HashMD5 
+nvcc MD5_GPU.cu  -Xcompiler -O3 -Xcompiler -Wall -Xptxas -O3 -std c++17 -o MD5_GPU.cu
+./HMD5_GPU 
 
