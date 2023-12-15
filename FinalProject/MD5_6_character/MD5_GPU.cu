@@ -279,7 +279,7 @@ __global__ void bruteForceKernel(char *targetHash)
       {  match =false;}
 
 
-    if (!match) 
+    if (match) 
     {
         printf("Password Cracked SMARTASSS !!!! :%s\n", password);
         return;
