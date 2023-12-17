@@ -264,7 +264,7 @@ __global__ void bruteForceKernel(char *targetHash)
     match=true;
 
 
-    char genhash[32];
+    char genhash[33];
     MD5String(password,hash);
     FormatDigestToHex(hash,genhash);
 
