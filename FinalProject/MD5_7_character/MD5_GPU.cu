@@ -354,7 +354,7 @@ __global__ void bruteForceKernel(char prefix1, char prefix2, char *targetHash,in
 	
 	password[7]='\0';
 	
-	 char genhash[32];
+	 char genhash[33];
     // Compute hash
 
         md5String(password,hash);
@@ -401,8 +401,8 @@ __host__ void cudaBruteForce(char *h_targetHash)
     char *dev_targetHash;
 
 
-    cudaMallocManaged((void**)&dev_targetHash, 32* sizeof(char));
-    cudaMemcpy(dev_targetHash, h_targetHash, 32* sizeof( char) , cudaMemcpyHostToDevice);
+    cudaMallocManaged((void**)&dev_targetHash, 33* sizeof(char));
+    cudaMemcpy(dev_targetHash, h_targetHash, 33* sizeof( char) , cudaMemcpyHostToDevice);
 
     int *dev_flag;
     cudaMallocManaged((void**)&dev_flag, sizeof(int));
@@ -428,8 +428,8 @@ __host__ void cudaBruteForce(char *h_targetHash)
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
     std::cout << "Password cracked in: " << duration.count() << " milliseconds" << std::endl;
 
-    char output[32];
-    cudaMemcpy(output,dev_targetHash, 32* sizeof(char) , cudaMemcpyDeviceToHost);
+    char output[33];
+    cudaMemcpy(output,dev_targetHash, 33* sizeof(char) , cudaMemcpyDeviceToHost);
     
     cudaError_t error = cudaGetLastError();
             if (error != cudaSuccess)
@@ -448,19 +448,19 @@ int main(int argc, char *argv[])
     const char* Input = argv[1]; 
     char* d_input;
     char* d_targetHash;
-    char h_targetHash[32];
+    char h_targetHash[33];
 
 
     std::cout <<" Space Patrol Delta \n **************\n Enter your Bank Password: *******\n\n"; 
     cudaMallocManaged(&d_input, 8);  //len+1
-    cudaMallocManaged(&d_targetHash, 32* sizeof(char) );
+    cudaMallocManaged(&d_targetHash, 33* sizeof(char) );
     cudaMemcpy(d_input, Input, 8, cudaMemcpyHostToDevice); //len+1
 
 
     md5Kernel<<<1,1>>>(d_input, d_targetHash);
 
 
-    cudaMemcpy(h_targetHash, d_targetHash, 32* sizeof(char) , cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_targetHash, d_targetHash, 33* sizeof(char) , cudaMemcpyDeviceToHost);
 
     cudaBruteForce(h_targetHash);
     
