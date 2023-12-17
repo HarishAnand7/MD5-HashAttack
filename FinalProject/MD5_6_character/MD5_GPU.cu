@@ -298,18 +298,18 @@ int main(int argc, char *argv[])
     const char* Input = argv[1];
     char* d_input;
     char* d_targetHash;
-    char h_targetHash[32];
-    char output[32];
+    char h_targetHash[33];
+    char output[33];
 
 
     cudaMallocManaged(&d_input, 7);
-    cudaMallocManaged(&d_targetHash, 32 * sizeof(char));
+    cudaMallocManaged(&d_targetHash, 33 * sizeof(char));
     cudaMemcpy(d_input, Input, 7, cudaMemcpyHostToDevice);
 
     // Launch the kernel
     MD5Kernel<<<1, 1>>>(d_input, d_targetHash);
 
-    cudaMemcpy(h_targetHash, d_targetHash, 32 * sizeof(char), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_targetHash, d_targetHash, 33 * sizeof(char), cudaMemcpyDeviceToHost);
 
     std::cout <<" Space Patrol Delta \n **************\n Enter your Bank Password: *******\n\n"; 
 
@@ -318,8 +318,8 @@ int main(int argc, char *argv[])
     cudaEventCreate(&stop);
 
     char* dev_targetHash;
-    cudaMallocManaged(&dev_targetHash, 32 * sizeof(char));
-    cudaMemcpy(dev_targetHash, h_targetHash, 32 * sizeof(char), cudaMemcpyHostToDevice);
+    cudaMallocManaged(&dev_targetHash, 33 * sizeof(char));
+    cudaMemcpy(dev_targetHash, h_targetHash, 33 * sizeof(char), cudaMemcpyHostToDevice);
 
     //number of blocks = (totalCombinations + threadsPerBlock - 1) / threadsPerBlock;
 
@@ -327,7 +327,7 @@ int main(int argc, char *argv[])
 
     bruteForceKernel<<<numBlocks, threadsPerBlock>>>(dev_targetHash);
 	
-    cudaMemcpy(output,dev_targetHash,32 * sizeof(char),cudaMemcpyDeviceToHost);	
+    cudaMemcpy(output,dev_targetHash,33 * sizeof(char),cudaMemcpyDeviceToHost);	
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
 
